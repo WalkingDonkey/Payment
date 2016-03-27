@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>MiniCheckout</title>
+    <link rel="stylesheet" type="text/css" href="../styles/pinus.css">
+</head>
+<body>
+<header>
+    <div class="h_content">
+        <span></span>
+    </div>
+</header>
+<section class="block">
+    <div class="content2">
+        <div class="app">
+            <span class="iphone"><img src="../img/bgpic.jpg" width="100%" height="auto"></span>
+            <label class="text_amount">
+                <input id="amount" type="text" placeholder="金 额"/>
+            </label>
+
+            <div class="ch">
+                <span class="up" onclick="wap_pay('upacp_wap')">银联 WAP</span>
+                <span class="up" onclick="wap_pay('alipay_wap')">支付宝 WAP</span>
+                <span class="up" onclick="wap_pay('bfb_wap')">百度钱包 WAP</span>
+                <span class="up" onclick="wap_pay('jdpay_wap')">京东支付 WAP</span>
+                <span class="up" onclick="wap_pay('yeepay_wap')">易宝支付 WAP</span>
+                <span class="up" onclick="wap_pay('wx_pub')">微信浏览器内公众号支付 WAP</span>
+
+            </div>
+        </div>
+    </div>
+</section>
+<script src="../../src/pingpp.js" type="text/javascript"></script>
+<script>
+    function wap_pay(channel) {
+
+       //// Pass charge which is returned from server into createPayment directly.
+
+       //  var charge = {"id":"ch_z5S084nvz5C4LC80GGTKGu94","object":"charge","created":1459055380,"livemode":false,"paid":false,"refunded":false,"app":"app_54i5aLLif18Cvbvj","channel":"alipay_wap","order_no":"c6c53b1d1210","client_ip":"127.0.0.1","amount":20,"amount_settle":20,"currency":"cny","subject":"Charge Subject","body":"Charge Body","extra":{"success_url":"http://127.0.0.1:8010/success"},"time_paid":null,"time_expire":1459141780,"time_settle":null,"transaction_no":null,"refunds":{"object":"list","url":"/v1/charges/ch_z5S084nvz5C4LC80GGTKGu94/refunds","has_more":false,"data":[]},"amount_refunded":0,"failure_code":null,"failure_msg":null,"metadata":{},"credential":{"object":"credential","alipay_wap":{"_input_charset":"utf-8","format":"xml","partner":"2008406950799665","req_data":"<auth_and_execute_req><request_token>2016032765046226140633835029665184051714</request_token></auth_and_execute_req>","sec_id":"0001","service":"alipay.wap.auth.authAndExecute","v":"2.0","sign":"MENpbkg4WDFXYlhMOU84ZTEwaVhEOGlM"}},"description":null};
+
+       // pingpp.createPayment(charge, function(result, err) {
+       //              console.log(result);
+       //              console.log(err);
+       //          });
+
+        var amount = document.getElementById('amount').value * 100;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://127.0.0.1:8010/pay", true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.send(JSON.stringify({
+            channel: channel,
+            amount: amount
+        }));
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+                pingpp.createPayment(xhr.responseText, function(result, err) {
+                    console.log(result);
+                    console.log(err);
+                });
+            }
+        }
+    }
+</script>
+</body>
+</html>
